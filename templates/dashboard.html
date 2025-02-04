@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ username }}'s GitHub Repositories</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='icons/logo.ico') }}" type="image/x-icon">
+    
+</head>
+<body>
+    <div class="container">
+        <h1>{{ username }}'s Repositories</h1>
+        
+        <div class="repo-grid">
+            {% for repo in repos %}
+                {% if username in repo.html_url %}
+                    <div class="repo-card">
+                        <div class="logo-container">
+                            <img src="{{ url_for('static', filename='logos/' + (repo_data[repo.name].logo if repo.name in repo_data else 'logo.jpg')) }}" alt="Repo Logo" class="repo-logo">
+                        </div>
+
+                        <div class="card-content">
+                            <a href="{{ repo.html_url }}" target="_blank" class="repo-link">
+                                <h2>{{ repo.name }}</h2>
+                            </a>
+                            <p><strong>Languages Used:</strong> {{ languages_data[repo.name] | join(', ') }}</p>
+
+                            <div class="edit-form" id="edit-form-{{ repo.name }}">
+                                <form action="/dashboard" method="POST" enctype="multipart/form-data">
+                                    <input type="hidden" name="repo_name" value="{{ repo.name }}">
+
+                                    <div>
+                                        <label for="logo">Change Logo</label>
+                                        <input type="file" id="logo" name="logo" accept="image/*">
+                                    </div>
+                            
+                                    <button type="submit">Save</button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <button class="edit-btn" onclick="toggleEditForm('{{ repo.name }}')">Edit</button>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        function toggleEditForm(repoName) {
+            const form = document.getElementById('edit-form-' + repoName);
+            form.style.display = (form.style.display === 'block') ? 'none' : 'block';
+        }
+    </script>
+   
+</body>
+</html>

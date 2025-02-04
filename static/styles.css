@@ -1,0 +1,209 @@
+/* General Styling */
+body {
+    font-family: 'Roboto', sans-serif;
+    background: linear-gradient(135deg, #161b22, #0d1117);
+    background-attachment: fixed;
+    margin: 0;
+    padding: 0;
+    color: #c9d1d9;
+}
+
+.login-container {
+    width: 90%;
+    max-width: 600px;
+    margin: 100px auto;
+    padding: 40px;
+    background: rgba(22, 27, 34, 0.8);
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+}
+
+/* Container */
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 50px auto;
+    padding: 20px;
+}
+
+/* Header Styling */
+h1 {
+    text-align: center;
+    color: #58a6ff;
+    margin-bottom: 40px;
+}
+
+/* Grid Layout for Repository Cards */
+.repo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 30px;
+    transition: grid-template-columns 0.3s ease;
+}
+
+/* Repository Card Styling */
+.repo-card {
+    background: linear-gradient(135deg, rgba(22, 27, 34, 0.9), rgba(34, 39, 52, 0.9));
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease;
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
+}
+
+.repo-card:hover {
+    transform: translateY(-12px) scale(1.05);
+    box-shadow: 0 8px 40px rgba(80, 160, 255, 0.2);
+    border: 2px solid #58a6ff;
+    filter: brightness(1.1);
+}
+
+/* Repo Card Text Styling */
+.card-content {
+    opacity: 1;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.card-content h2 {
+    color: #ff7eb9; /* GitHub-inspired pink */
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.card-content p {
+    color: #8b949e;
+    font-size: 16px;
+    margin-bottom: 20px;
+    line-height: 1.4;
+}
+
+/* Logo Styling */
+.repo-logo {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 2px solid #58a6ff;
+    margin-bottom: 15px;
+    transition: box-shadow 0.3s ease;
+}
+
+.repo-logo:hover {
+    box-shadow: 0 0 15px rgba(80, 160, 255, 0.8);
+}
+
+/* Edit Button */
+.edit-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: linear-gradient(135deg, #ff7eb9, #58a6ff);
+    color: #0d1117;
+    padding: 6px 10px;
+    border: 1px solid #58a6ff;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease;
+}
+
+.edit-btn:hover {
+    background: linear-gradient(135deg, #58a6ff, #ff7eb9);
+    color: #161b22;
+    transform: scale(1.1);
+}
+
+/* Edit Form */
+.edit-form {
+    display: none;
+    margin-top: 15px;
+    background-color: #0d1117;
+    padding: 20px;
+    border: 1px solid #30363d;
+    border-radius: 8px;
+}
+
+form input {
+    padding: 10px;
+    width: 100%;
+    border-radius: 5px;
+    border: 1px solid #30363d;
+    background-color: #161b22;
+    color: #c9d1d9;
+    transition: border 0.3s ease;
+}
+
+form input:focus {
+    border: 1px solid #58a6ff;
+    outline: none;
+}
+
+form button {
+    background-color: #58a6ff;
+    color: #0d1117;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+form button:hover {
+    background-color: #1f6feb;
+    transform: translateY(-2px);
+}
+
+/* Media Query for Smaller Screens */
+@media (max-width: 768px) {
+    .container {
+        width: 95%;
+    }
+
+    .repo-card {
+        padding: 20px;
+    }
+
+    .card-content h2 {
+        font-size: 20px;
+    }
+
+    .card-content p {
+        font-size: 14px;
+    }
+
+    .repo-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+/* File Upload Section */
+.edit-form label {
+    font-size: 16px;
+    color: #8b949e;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.edit-form input[type="file"] {
+    display: none;
+}
+
+/* Custom Upload Button */
+.edit-form label[for="logo"] {
+    position: relative;
+    background-color: #58a6ff;
+    color: #161b22;
+    padding: 12px 18px;
+    border-radius: 5%;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+}
+
+.edit-form label[for="logo"]:hover {
+    background-color: #1f6feb;
+    color: #161b22;
+    transform: translateY(-4px);
+}
