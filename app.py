@@ -27,7 +27,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 @app.route('/')
 def home():
-    return 'Welcome to your GitHub Repo Dashboard! <a href="/login">Login with GitHub</a>'
+    return render_template('home.html')
 
 @app.route('/login')
 def login():

@@ -19,6 +19,27 @@ body {
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
 }
 
+/* Centered Button Styling */
+.centered-btn {
+    display: inline-block;
+    margin-top: 20px;
+    background: linear-gradient(135deg, #ff7eb9, #58a6ff);
+    color: #0d1117;
+    padding: 12px 20px;
+    border: 1px solid #58a6ff;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    text-align: center;
+    transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease;
+}
+
+.centered-btn:hover {
+    background: linear-gradient(135deg, #58a6ff, #ff7eb9);
+    color: #161b22;
+    transform: scale(1.1);
+}
+
 /* Container */
 .container {
     width: 90%;
