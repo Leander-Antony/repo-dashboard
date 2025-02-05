@@ -116,24 +116,23 @@ h1 {
     box-shadow: 0 0 15px rgba(80, 160, 255, 0.8);
 }
 
-/* Edit Button */
+/* Edit Button - now styled as three dots */
 .edit-btn {
     position: absolute;
     top: 10px;
     right: 10px;
-    background: linear-gradient(135deg, #ff7eb9, #58a6ff);
-    color: #0d1117;
-    padding: 6px 10px;
-    border: 1px solid #58a6ff;
-    border-radius: 5px;
+    background: none;
+    color: #58a6ff;
+    font-size: 24px;
+    padding: 0;
+    border: none;
     cursor: pointer;
-    transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease;
+    transition: color 0.3s ease, transform 0.3s ease;
 }
 
 .edit-btn:hover {
-    background: linear-gradient(135deg, #58a6ff, #ff7eb9);
-    color: #161b22;
-    transform: scale(1.1);
+    color: #ff7eb9;
+    transform: scale(1.2);
 }
 
 /* Edit Form */

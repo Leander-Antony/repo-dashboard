@@ -6,7 +6,6 @@
     <title>{{ username }}'s GitHub Repositories</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <link rel="icon" href="{{ url_for('static', filename='icons/logo.ico') }}" type="image/x-icon">
-    
 </head>
 <body>
     <div class="container">
@@ -17,7 +16,7 @@
                 {% if username in repo.html_url %}
                     <div class="repo-card">
                         <div class="logo-container">
-                            <img src="{{ url_for('static', filename='logos/' + (repo_data[repo.name].logo if repo.name in repo_data else 'logo.jpg')) }}" alt="Repo Logo" class="repo-logo">
+                            <img src="{{ url_for('get_logo', repo_name=repo.name) }}" alt="Logo" class="repo-logo">
                         </div>
 
                         <div class="card-content">
@@ -29,18 +28,21 @@
                             <div class="edit-form" id="edit-form-{{ repo.name }}">
                                 <form action="/dashboard" method="POST" enctype="multipart/form-data">
                                     <input type="hidden" name="repo_name" value="{{ repo.name }}">
-
+                            
                                     <div>
-                                        <label for="logo">Change Logo</label>
-                                        <input type="file" id="logo" name="logo" accept="image/*">
+                                        <label for="logo-{{ repo.name }}">Change Logo</label>
+                                        <input type="file" id="logo-{{ repo.name }}" name="logo" accept="image/*" onchange="showFileName('{{ repo.name }}', this)">
+                                        <span id="file-name-{{ repo.name }}">No file chosen</span> <!-- Span to show the file name -->
                                     </div>
                             
+
                                     <button type="submit">Save</button>
                                 </form>
                             </div>
                         </div>
 
-                        <button class="edit-btn" onclick="toggleEditForm('{{ repo.name }}')">Edit</button>
+                        <button class="edit-btn" onclick="toggleEditForm('{{ repo.name }}')">⋮</button>
+
                     </div>
                 {% endif %}
             {% endfor %}
@@ -52,7 +54,11 @@
             const form = document.getElementById('edit-form-' + repoName);
             form.style.display = (form.style.display === 'block') ? 'none' : 'block';
         }
+
+        function showFileName(repoName, input) {
+            const fileName = input.files[0] ? input.files[0].name : "No file chosen";
+            document.getElementById('file-name-' + repoName).textContent = fileName;
+        }
     </script>
-   
 </body>
 </html>
