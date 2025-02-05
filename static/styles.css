@@ -8,6 +8,7 @@ body {
     color: #c9d1d9;
 }
 
+/* Login Container */
 .login-container {
     width: 90%;
     max-width: 600px;
@@ -19,7 +20,7 @@ body {
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
 }
 
-/* Centered Button Styling */
+/* Centered Button */
 .centered-btn {
     display: inline-block;
     margin-top: 20px;
@@ -40,7 +41,7 @@ body {
     transform: scale(1.1);
 }
 
-/* Container */
+/* Main Container */
 .container {
     width: 90%;
     max-width: 1200px;
@@ -48,22 +49,29 @@ body {
     padding: 20px;
 }
 
-/* Header Styling */
+/* Header */
 h1 {
     text-align: center;
     color: #58a6ff;
     margin-bottom: 40px;
 }
 
-/* Grid Layout for Repository Cards */
+/* Grid Layout for Repositories */
 .repo-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 30px;
     transition: grid-template-columns 0.3s ease;
 }
 
-/* Repository Card Styling */
+/* Ensuring Minimum 2 Columns */
+@media (max-width: 600px) {
+    .repo-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Repository Card */
 .repo-card {
     background: linear-gradient(135deg, rgba(22, 27, 34, 0.9), rgba(34, 39, 52, 0.9));
     padding: 30px;
@@ -82,14 +90,14 @@ h1 {
     filter: brightness(1.1);
 }
 
-/* Repo Card Text Styling */
+/* Repository Card Content */
 .card-content {
     opacity: 1;
     transition: opacity 0.3s ease-in-out;
 }
 
 .card-content h2 {
-    color: #ff7eb9; /* GitHub-inspired pink */
+    color: #ff7eb9;
     font-size: 24px;
     margin-bottom: 10px;
 }
@@ -101,7 +109,7 @@ h1 {
     line-height: 1.4;
 }
 
-/* Logo Styling */
+/* Repo Logo */
 .repo-logo {
     width: 80px;
     height: 80px;
@@ -116,7 +124,7 @@ h1 {
     box-shadow: 0 0 15px rgba(80, 160, 255, 0.8);
 }
 
-/* Edit Button - now styled as three dots */
+/* Edit Button */
 .edit-btn {
     position: absolute;
     top: 10px;
@@ -175,35 +183,27 @@ form button:hover {
     transform: translateY(-2px);
 }
 
-/* Media Query for Smaller Screens */
-@media (max-width: 768px) {
-    .container {
-        width: 95%;
-    }
-
-    .repo-card {
-        padding: 20px;
-    }
-
-    .card-content h2 {
-        font-size: 20px;
-    }
-
-    .card-content p {
-        font-size: 14px;
-    }
-
-    .repo-grid {
-        grid-template-columns: 1fr 1fr;
-    }
+/* Pin Button */
+.pin-btn {
+    position: absolute;
+    top: 50px;
+    right: 10px;
+    background-color: #58a6ff;
+    color: #161b22;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.3s ease;
 }
 
-/* Hide the actual file input */
-.edit-form input[type="file"] {
-    display: none;
+.pin-btn:hover {
+    background-color: #ff7eb9;
+    color: #0d1117;
 }
 
-/* Custom Upload Button Styling */
+/* Custom File Upload */
 .custom-file-upload {
     background-color: #58a6ff;
     color: #161b22;
@@ -219,30 +219,45 @@ form button:hover {
     transform: scale(1.05);
 }
 
-/* Display the selected file name */
+/* Hide File Input */
+.edit-form input[type="file"] {
+    display: none;
+}
+
+/* Display Selected File Name */
 #file-name-{{ repo.name }} {
     display: inline-block;
     margin-left: 10px;
     color: #8b949e;
 }
 
-
-/* Pin Button - positioned just below the Edit button */
-.pin-btn {
-    position: absolute;
-    top: 50px; /* Adjusted to place under the Edit button */
-    right: 10px;
-    background-color: #58a6ff;
-    color: #161b22;
-    border: none;
-    border-radius: 5px;
-    padding: 5px 10px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background 0.3s ease;
+/* Responsive Adjustments */
+@media (max-width: 1024px) {
+    .repo-grid {
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    }
 }
 
-.pin-btn:hover {
-    background-color: #ff7eb9;
-    color: #0d1117;
+@media (max-width: 768px) {
+    .repo-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .repo-card {
+        padding: 20px;
+    }
+
+    .card-content h2 {
+        font-size: 20px;
+    }
+
+    .card-content p {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .repo-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
