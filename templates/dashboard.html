@@ -6,15 +6,24 @@
     <title>{{ username }}'s GitHub Repositories</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <link rel="icon" href="{{ url_for('static', filename='icons/logo.ico') }}" type="image/x-icon">
+    
+    <!-- Add SortableJS CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
 </head>
 <body>
     <div class="container">
         <h1>{{ username }}'s Repositories</h1>
-        
-        <div class="repo-grid">
+
+        <!-- Pinned Repos Section -->
+        <h2>Pinned Repositories</h2>
+        <div class="pinned repo-grid" id="pinned"></div>
+
+        <!-- Repository Cards Section -->
+        <h2>All Repositories</h2>
+        <div class="repo-grid" id="repo-grid">
             {% for repo in repos %}
                 {% if username in repo.html_url %}
-                    <div class="repo-card">
+                    <div class="repo-card" id="repo-card-{{ repo.name }}">
                         <div class="logo-container">
                             <img src="{{ url_for('get_logo', repo_name=repo.name) }}" alt="Logo" class="repo-logo">
                         </div>
@@ -28,21 +37,22 @@
                             <div class="edit-form" id="edit-form-{{ repo.name }}">
                                 <form action="/dashboard" method="POST" enctype="multipart/form-data">
                                     <input type="hidden" name="repo_name" value="{{ repo.name }}">
-                            
+                                    
                                     <div>
-                                        <label for="logo-{{ repo.name }}">Change Logo</label>
+                                        <label for="logo-{{ repo.name }}" class="custom-file-upload">Change Logo</label>
                                         <input type="file" id="logo-{{ repo.name }}" name="logo" accept="image/*" onchange="showFileName('{{ repo.name }}', this)">
-                                        <span id="file-name-{{ repo.name }}">No file chosen</span> <!-- Span to show the file name -->
+                                        <span id="file-name-{{ repo.name }}">No file chosen</span>
                                     </div>
-                            
-
+                                    
                                     <button type="submit">Save</button>
                                 </form>
                             </div>
+                            
                         </div>
 
                         <button class="edit-btn" onclick="toggleEditForm('{{ repo.name }}')">⋮</button>
 
+                        <button class="pin-btn" onclick="pinRepo('{{ repo.name }}')">Pin</button>
                     </div>
                 {% endif %}
             {% endfor %}
@@ -50,6 +60,85 @@
     </div>
 
     <script>
+        // Initialize SortableJS on the repo-grid div to make the cards draggable
+        const el = document.getElementById('repo-grid');
+        new Sortable(el, {
+            animation: 150,  // Animation speed for dragging
+            dragClass: 'dragging',  // Class added to the item while dragging
+            onEnd(evt) {
+                console.log('Reordered cards:', evt.newIndex, evt.oldIndex);
+            }
+        });
+
+        // Initialize SortableJS on the pinned repos section to make them draggable
+        const pinnedEl = document.getElementById('pinned');
+        new Sortable(pinnedEl, {
+            animation: 150,  // Animation speed for dragging
+            dragClass: 'dragging',
+            onEnd(evt) {
+                console.log('Reordered pinned cards:', evt.newIndex, evt.oldIndex);
+            }
+        });
+
+        function pinRepo(repoName) {
+            const repoCard = document.getElementById('repo-card-' + repoName);
+            const pinnedSection = document.getElementById('pinned');
+            
+            // Check if the repository is already pinned
+            if (document.querySelector(`#pinned #repo-card-${repoName}`)) {
+                alert(`${repoName} is already pinned.`);
+                return;  // Exit the function if the repo is already pinned
+            }
+
+            // Clone the card and append it to the "Pinned" section
+            const clonedCard = repoCard.cloneNode(true);
+            // Remove the pin button and add an unpin button
+            const pinButton = clonedCard.querySelector('.pin-btn');
+            pinButton.textContent = 'Unpin';
+            pinButton.setAttribute('onclick', `unpinRepo('${repoName}')`);
+            pinnedSection.appendChild(clonedCard);
+            
+            // Store pinned repos in local storage
+            let pinnedRepos = JSON.parse(localStorage.getItem('pinnedRepos') || '[]');
+            if (!pinnedRepos.includes(repoName)) {
+                pinnedRepos.push(repoName);
+                localStorage.setItem('pinnedRepos', JSON.stringify(pinnedRepos));
+            }
+        }
+
+        // Function to handle unpinning the repo
+        function unpinRepo(repoName) {
+            const pinnedSection = document.getElementById('pinned');
+            const pinnedCard = pinnedSection.querySelector('#repo-card-' + repoName);
+
+            if (pinnedCard) {
+                pinnedSection.removeChild(pinnedCard);
+                
+                // Update local storage
+                let pinnedRepos = JSON.parse(localStorage.getItem('pinnedRepos') || '[]');
+                pinnedRepos = pinnedRepos.filter(repo => repo !== repoName);
+                localStorage.setItem('pinnedRepos', JSON.stringify(pinnedRepos));
+            }
+        }
+
+        // Load pinned repos from local storage when the page loads
+        window.onload = function() {
+            let pinnedRepos = JSON.parse(localStorage.getItem('pinnedRepos') || '[]');
+            const pinnedSection = document.getElementById('pinned');
+
+            pinnedRepos.forEach(repoName => {
+                const repoCard = document.getElementById('repo-card-' + repoName);
+                if (repoCard) {
+                    const clonedCard = repoCard.cloneNode(true);
+                    const pinButton = clonedCard.querySelector('.pin-btn');
+                    pinButton.textContent = 'Unpin';
+                    pinButton.setAttribute('onclick', `unpinRepo('${repoName}')`);
+                    pinnedSection.appendChild(clonedCard);
+                }
+            });
+        };
+
+        // Existing functions for toggling the edit form and showing file name
         function toggleEditForm(repoName) {
             const form = document.getElementById('edit-form-' + repoName);
             form.style.display = (form.style.display === 'block') ? 'none' : 'block';
