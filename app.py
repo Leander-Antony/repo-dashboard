@@ -40,6 +40,8 @@ with app.app_context():
 
 @app.route('/')
 def home():
+    if 'token' in session:
+        return redirect(url_for('dashboard'))
     return render_template('home.html')
 
 @app.route('/login')
