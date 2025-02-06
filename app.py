@@ -42,6 +42,8 @@ with app.app_context():
 
 @app.route('/')
 def home():
+    if 'token' in session:
+        return redirect(url_for('dashboard'))
     return render_template('home.html')
 
 @app.route('/login')
@@ -155,6 +157,13 @@ def get_logo(repo_name):
         return app.response_class(repo.logo, mimetype='image/jpeg')
     else:
         return app.send_static_file('logos/default_logo.jpg')  # Serve the default logo if no custom one exists
+
+@app.route('/logout')
+def logout():
+    session.clear()  # Clears the session
+    flash("You have been logged out.", "info")
+    return redirect(url_for('home'))  # Redirects to home page after logout
+
 
 if __name__ == '__main__':
     app.run(debug=True)

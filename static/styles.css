@@ -1,4 +1,4 @@
-/* General Styling */
+
 body {
     font-family: 'Roboto', sans-serif;
     background: linear-gradient(135deg, #161b22, #0d1117);
@@ -8,7 +8,6 @@ body {
     color: #c9d1d9;
 }
 
-/* Login Container */
 .login-container {
     width: 90%;
     max-width: 600px;
@@ -20,7 +19,6 @@ body {
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
 }
 
-/* Centered Button */
 .centered-btn {
     display: inline-block;
     margin-top: 20px;
@@ -41,7 +39,6 @@ body {
     transform: scale(1.1);
 }
 
-/* Main Container */
 .container {
     width: 90%;
     max-width: 1200px;
@@ -49,14 +46,12 @@ body {
     padding: 20px;
 }
 
-/* Header */
 h1 {
     text-align: center;
     color: #58a6ff;
     margin-bottom: 40px;
 }
 
-/* Grid Layout for Repositories */
 .repo-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -64,14 +59,12 @@ h1 {
     transition: grid-template-columns 0.3s ease;
 }
 
-/* Ensuring Minimum 2 Columns */
 @media (max-width: 600px) {
     .repo-grid {
         grid-template-columns: repeat(2, 1fr);
     }
 }
 
-/* Repository Card */
 .repo-card {
     background: linear-gradient(135deg, rgba(22, 27, 34, 0.9), rgba(34, 39, 52, 0.9));
     padding: 30px;
@@ -90,7 +83,6 @@ h1 {
     filter: brightness(1.1);
 }
 
-/* Repository Card Content */
 .card-content {
     opacity: 1;
     transition: opacity 0.3s ease-in-out;
@@ -109,7 +101,6 @@ h1 {
     line-height: 1.4;
 }
 
-/* Repo Logo */
 .repo-logo {
     width: 80px;
     height: 80px;
@@ -123,8 +114,7 @@ h1 {
 .repo-logo:hover {
     box-shadow: 0 0 15px rgba(80, 160, 255, 0.8);
 }
-
-/* Edit Button */
+/
 .edit-btn {
     position: absolute;
     top: 10px;
@@ -143,7 +133,6 @@ h1 {
     transform: scale(1.2);
 }
 
-/* Edit Form */
 .edit-form {
     display: none;
     margin-top: 15px;
@@ -183,7 +172,6 @@ form button:hover {
     transform: translateY(-2px);
 }
 
-/* Pin Button */
 .pin-btn {
     position: absolute;
     top: 50px;
@@ -203,7 +191,6 @@ form button:hover {
     color: #0d1117;
 }
 
-/* Custom File Upload */
 .custom-file-upload {
     background-color: #58a6ff;
     color: #161b22;
@@ -219,19 +206,69 @@ form button:hover {
     transform: scale(1.05);
 }
 
-/* Hide File Input */
 .edit-form input[type="file"] {
     display: none;
 }
 
-/* Display Selected File Name */
 #file-name-{{ repo.name }} {
     display: inline-block;
     margin-left: 10px;
     color: #8b949e;
 }
 
-/* Responsive Adjustments */
+
+header {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 100%;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: flex-end;
+    background-color: rgba(22, 27, 34, 0.8);
+    z-index: 1000;
+}
+
+
+.logout-btn {
+    background-color: #58a6ff;
+    color: #161b22;
+    padding: 9px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    text-decoration: none;
+    transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.logout-btn:hover {
+    background-color: #ff7eb9;
+    color: #0d1117;
+}
+
+
+
+@media (max-width: 768px) {
+    header {
+        padding: 10px;
+    }
+
+    .logout-btn {
+        padding: 10px 15px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .logout-btn {
+        padding: 8px 12px;
+        font-size: 12px;
+    }
+}
+
+
 @media (max-width: 1024px) {
     .repo-grid {
         grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));

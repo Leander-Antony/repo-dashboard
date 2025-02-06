@@ -6,19 +6,21 @@
     <title>{{ username }}'s GitHub Repositories</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <link rel="icon" href="{{ url_for('static', filename='icons/logo.ico') }}" type="image/x-icon">
-    
-    <!-- Add SortableJS CDN -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
 </head>
 <body>
+    <header>
+        <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
+    </header>
+    
     <div class="container">
-        <h1>{{ username }}'s Repositories</h1>
+        <div class="navbar">
+            <h1>{{ username }}'s Repositories</h1>
+            
+        </div>
 
-        <!-- Pinned Repos Section -->
         <h2>Pinned Repositories</h2>
         <div class="pinned repo-grid" id="pinned"></div>
 
-        <!-- Repository Cards Section -->
         <h2>All Repositories</h2>
         <div class="repo-grid" id="repo-grid">
             {% for repo in repos %}
@@ -47,11 +49,9 @@
                                     <button type="submit">Save</button>
                                 </form>
                             </div>
-                            
                         </div>
 
                         <button class="edit-btn" onclick="toggleEditForm('{{ repo.name }}')">⋮</button>
-
                         <button class="pin-btn" onclick="pinRepo('{{ repo.name }}')">Pin</button>
                     </div>
                 {% endif %}
@@ -60,75 +60,70 @@
     </div>
 
     <script>
-        // Initialize SortableJS on the repo-grid div to make the cards draggable
         const el = document.getElementById('repo-grid');
         new Sortable(el, {
-            animation: 150,  // Animation speed for dragging
-            dragClass: 'dragging',  // Class added to the item while dragging
+            animation: 150,  
+            dragClass: 'dragging', 
             onEnd(evt) {
-                console.log('Reordered cards:', evt.newIndex, evt.oldIndex);
+                saveCardOrder();
             }
         });
+    
 
-        // Initialize SortableJS on the pinned repos section to make them draggable
         const pinnedEl = document.getElementById('pinned');
         new Sortable(pinnedEl, {
-            animation: 150,  // Animation speed for dragging
+            animation: 150, 
             dragClass: 'dragging',
             onEnd(evt) {
-                console.log('Reordered pinned cards:', evt.newIndex, evt.oldIndex);
+                savePinnedCardOrder();
             }
         });
-
-        function pinRepo(repoName) {
-            const repoCard = document.getElementById('repo-card-' + repoName);
-            const pinnedSection = document.getElementById('pinned');
-            
-            // Check if the repository is already pinned
-            if (document.querySelector(`#pinned #repo-card-${repoName}`)) {
-                alert(`${repoName} is already pinned.`);
-                return;  // Exit the function if the repo is already pinned
-            }
-
-            // Clone the card and append it to the "Pinned" section
-            const clonedCard = repoCard.cloneNode(true);
-            // Remove the pin button and add an unpin button
-            const pinButton = clonedCard.querySelector('.pin-btn');
-            pinButton.textContent = 'Unpin';
-            pinButton.setAttribute('onclick', `unpinRepo('${repoName}')`);
-            pinnedSection.appendChild(clonedCard);
-            
-            // Store pinned repos in local storage
-            let pinnedRepos = JSON.parse(localStorage.getItem('pinnedRepos') || '[]');
-            if (!pinnedRepos.includes(repoName)) {
-                pinnedRepos.push(repoName);
-                localStorage.setItem('pinnedRepos', JSON.stringify(pinnedRepos));
-            }
+    
+        function saveCardOrder() {
+            const repoCards = document.querySelectorAll('#repo-grid .repo-card');
+            const order = Array.from(repoCards).map(card => card.id);
+            localStorage.setItem('repoCardOrder', JSON.stringify(order));
         }
-
-        // Function to handle unpinning the repo
-        function unpinRepo(repoName) {
-            const pinnedSection = document.getElementById('pinned');
-            const pinnedCard = pinnedSection.querySelector('#repo-card-' + repoName);
-
-            if (pinnedCard) {
-                pinnedSection.removeChild(pinnedCard);
-                
-                // Update local storage
-                let pinnedRepos = JSON.parse(localStorage.getItem('pinnedRepos') || '[]');
-                pinnedRepos = pinnedRepos.filter(repo => repo !== repoName);
-                localStorage.setItem('pinnedRepos', JSON.stringify(pinnedRepos));
-            }
+    
+        function savePinnedCardOrder() {
+            const pinnedCards = document.querySelectorAll('#pinned .repo-card');
+            const pinnedOrder = Array.from(pinnedCards).map(card => card.id);
+            localStorage.setItem('pinnedRepoCardOrder', JSON.stringify(pinnedOrder));
         }
-
-        // Load pinned repos from local storage when the page loads
+    
         window.onload = function() {
-            let pinnedRepos = JSON.parse(localStorage.getItem('pinnedRepos') || '[]');
+            let repoOrder = JSON.parse(localStorage.getItem('repoCardOrder') || '[]');
+            let pinnedOrder = JSON.parse(localStorage.getItem('pinnedRepoCardOrder') || '[]');
+    
+            const repoGrid = document.getElementById('repo-grid');
             const pinnedSection = document.getElementById('pinned');
 
+            if (repoOrder.length) {
+                repoOrder.forEach(repoId => {
+                    const card = document.getElementById(repoId);
+                    if (card) {
+                        repoGrid.appendChild(card);
+                    }
+                });
+            }
+
+            if (pinnedOrder.length) {
+                pinnedOrder.forEach(repoId => {
+                    const card = document.getElementById(repoId);
+                    if (card) {
+                        const clonedCard = card.cloneNode(true);
+                        const pinButton = clonedCard.querySelector('.pin-btn');
+                        pinButton.textContent = 'Unpin';
+                        pinButton.setAttribute('onclick', `unpinRepo('${repoId.split('-').pop()}')`);
+                        pinnedSection.appendChild(clonedCard);
+                    }
+                });
+            }
+
+            let pinnedRepos = JSON.parse(localStorage.getItem('pinnedRepos') || '[]');
             pinnedRepos.forEach(repoName => {
                 const repoCard = document.getElementById('repo-card-' + repoName);
-                if (repoCard) {
+                if (repoCard && !document.querySelector(`#pinned #repo-card-${repoName}`)) {
                     const clonedCard = repoCard.cloneNode(true);
                     const pinButton = clonedCard.querySelector('.pin-btn');
                     pinButton.textContent = 'Unpin';
@@ -137,17 +132,46 @@
                 }
             });
         };
+    
+        function pinRepo(repoName) {
+            const repoCard = document.getElementById('repo-card-' + repoName);
+            const pinnedSection = document.getElementById('pinned');
+            
+            if (document.querySelector(`#pinned #repo-card-${repoName}`)) {
+                alert(`${repoName} is already pinned.`);
+                return;
+            }
+    
+            const clonedCard = repoCard.cloneNode(true);
+            const pinButton = clonedCard.querySelector('.pin-btn');
+            pinButton.textContent = 'Unpin';
+            pinButton.setAttribute('onclick', `unpinRepo('${repoName}')`);
+            pinnedSection.appendChild(clonedCard);
 
-        // Existing functions for toggling the edit form and showing file name
-        function toggleEditForm(repoName) {
-            const form = document.getElementById('edit-form-' + repoName);
-            form.style.display = (form.style.display === 'block') ? 'none' : 'block';
+            let pinnedRepos = JSON.parse(localStorage.getItem('pinnedRepos') || '[]');
+            if (!pinnedRepos.includes(repoName)) {
+                pinnedRepos.push(repoName);
+                localStorage.setItem('pinnedRepos', JSON.stringify(pinnedRepos));
+            }
+    
+            savePinnedCardOrder();
         }
+    
+        function unpinRepo(repoName) {
+            const pinnedSection = document.getElementById('pinned');
+            const pinnedCard = pinnedSection.querySelector('#repo-card-' + repoName);
+    
+            if (pinnedCard) {
+                pinnedSection.removeChild(pinnedCard);
 
-        function showFileName(repoName, input) {
-            const fileName = input.files[0] ? input.files[0].name : "No file chosen";
-            document.getElementById('file-name-' + repoName).textContent = fileName;
+                let pinnedRepos = JSON.parse(localStorage.getItem('pinnedRepos') || '[]');
+                pinnedRepos = pinnedRepos.filter(repo => repo !== repoName);
+                localStorage.setItem('pinnedRepos', JSON.stringify(pinnedRepos));
+    
+                savePinnedCardOrder();
+            }
         }
     </script>
+    
 </body>
 </html>
