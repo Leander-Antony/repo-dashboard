@@ -9,16 +9,15 @@ load_dotenv()
 app = Flask(__name__)
 app.secret_key = '78896'
 
-# Initialize Database
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///repos.db'
 db = SQLAlchemy(app)
 
-# Define the Repo Model
+
 class Repo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     username = db.Column(db.String(100), nullable=False)
-    logo = db.Column(db.LargeBinary, nullable=True)  # To store the logo as binary data
+    logo = db.Column(db.LargeBinary, nullable=True)  
 
 
 # Initialize OAuth
@@ -36,7 +35,6 @@ github = oauth.register(
 UPLOAD_FOLDER = 'static/logos'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-# Initialize the database
 with app.app_context():
     db.create_all()
 
@@ -73,12 +71,11 @@ def auth():
 def dashboard():
     if 'token' not in session:
         flash("You must be logged in to access the dashboard.", "warning")
-        return redirect(url_for('home'))  # Redirect to home or login page
+        return redirect(url_for('home'))
 
     try:
         user_info = github.get('https://api.github.com/user', token=session['token']).json()
-        
-        # Check if the 'login' field is in the user_info
+
         if 'login' not in user_info:
             flash("Failed to retrieve user information. Please log in again.", "error")
             return redirect(url_for('home'))
@@ -97,16 +94,14 @@ def dashboard():
             repo_name = request.form['repo_name']
             file = request.files['logo']
             
-            # Process image upload and store it in the database
-            logo_data = file.read() if file else None  # Read the file as binary data
-            
-            # Log the uploaded logo size
+            logo_data = file.read() if file else None  
+
             if logo_data:
                 print(f"Logo data size: {len(logo_data)} bytes")
             else:
                 print("No logo data uploaded")
 
-            # Check if repo exists, otherwise add it
+
             existing_repo = Repo.query.filter_by(name=repo_name, username=username).first()
             if existing_repo:
                 existing_repo.logo = logo_data
@@ -141,7 +136,6 @@ def update_repo():
         logo_filename = repo_name + '.jpg'
         # logo.save(os.path.join(app.config['UPLOAD_FOLDER'], logo_filename)) # to store it locally
         
-        # Update the database entry
         repo = Repo.query.filter_by(name=repo_name, username=session['username']).first()
         repo.logo = logo_filename
         db.session.commit()
@@ -156,14 +150,7 @@ def get_logo(repo_name):
     if repo and repo.logo:
         return app.response_class(repo.logo, mimetype='image/jpeg')
     else:
-        return app.send_static_file('logos/default_logo.jpg')  # Serve the default logo if no custom one exists
-
-@app.route('/logout')
-def logout():
-    session.clear()  # Clears the session
-    flash("You have been logged out.", "info")
-    return redirect(url_for('home'))  # Redirects to home page after logout
-
+        return app.send_static_file('logos/default_logo.jpg')  
 
 if __name__ == '__main__':
     app.run(debug=True)

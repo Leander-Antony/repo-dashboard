@@ -6,19 +6,13 @@
     <title>{{ username }}'s GitHub Repositories</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <link rel="icon" href="{{ url_for('static', filename='icons/logo.ico') }}" type="image/x-icon">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
-
+    
+    <!-- Add SortableJS CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
 </head>
 <body>
-    <header>
-        <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
-    </header>
-    
     <div class="container">
-        <div class="navbar">
-            <h1>{{ username }}'s Repositories</h1>
-            
-        </div>
+        <h1>{{ username }}'s Repositories</h1>
 
         <h2>Pinned Repositories</h2>
         <div class="pinned repo-grid" id="pinned"></div>
@@ -51,9 +45,11 @@
                                     <button type="submit">Save</button>
                                 </form>
                             </div>
+                            
                         </div>
 
                         <button class="edit-btn" onclick="toggleEditForm('{{ repo.name }}')">⋮</button>
+
                         <button class="pin-btn" onclick="pinRepo('{{ repo.name }}')">Pin</button>
                     </div>
                 {% endif %}
@@ -71,7 +67,6 @@
             }
         });
     
-
         const pinnedEl = document.getElementById('pinned');
         new Sortable(pinnedEl, {
             animation: 150, 
@@ -81,6 +76,7 @@
             }
         });
     
+
         function saveCardOrder() {
             const repoCards = document.querySelectorAll('#repo-grid .repo-card');
             const order = Array.from(repoCards).map(card => card.id);
@@ -99,7 +95,7 @@
     
             const repoGrid = document.getElementById('repo-grid');
             const pinnedSection = document.getElementById('pinned');
-
+    
             if (repoOrder.length) {
                 repoOrder.forEach(repoId => {
                     const card = document.getElementById(repoId);
@@ -121,7 +117,7 @@
                     }
                 });
             }
-
+    
             let pinnedRepos = JSON.parse(localStorage.getItem('pinnedRepos') || '[]');
             pinnedRepos.forEach(repoName => {
                 const repoCard = document.getElementById('repo-card-' + repoName);
@@ -149,7 +145,7 @@
             pinButton.textContent = 'Unpin';
             pinButton.setAttribute('onclick', `unpinRepo('${repoName}')`);
             pinnedSection.appendChild(clonedCard);
-
+            
             let pinnedRepos = JSON.parse(localStorage.getItem('pinnedRepos') || '[]');
             if (!pinnedRepos.includes(repoName)) {
                 pinnedRepos.push(repoName);
